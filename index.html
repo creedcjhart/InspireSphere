@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ReviewSphere - Your Trusted Ratings</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Lobster&family=Open+Sans:wght@300;600&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -25,6 +25,7 @@
         header h1 {
             margin: 0;
             font-size: 2.5em;
+            font-family: 'Lobster', cursive;
         }
 
         header p {
@@ -44,6 +45,7 @@
             text-decoration: none;
             color: #1e90ff;
             font-weight: bold;
+            font-family: 'Open Sans', sans-serif;
         }
 
         nav a:hover {
@@ -122,7 +124,6 @@
             background-color: #005bb5;
         }
 
-        /* Google Ads Placeholder */
         .ads {
             text-align: center;
             margin: 20px 0;
@@ -134,6 +135,20 @@
             height: 90px;
             border: none;
         }
+
+        .about, .contact {
+            display: none;
+        }
+
+        .about h2, .contact h2 {
+            color: #1e90ff;
+            font-family: 'Lobster', cursive;
+        }
+
+        .about p, .contact p {
+            line-height: 1.6;
+            font-family: 'Open Sans', sans-serif;
+        }
     </style>
 </head>
 <body>
@@ -143,20 +158,34 @@
     </header>
 
     <nav>
-        <a href="#">Home</a>
-        <a href="#">About</a>
-        <a href="#">Contact</a>
+        <a href="#" onclick="showSection('home')">Home</a>
+        <a href="#" onclick="showSection('about')">About</a>
+        <a href="#" onclick="showSection('contact')">Contact</a>
     </nav>
 
     <div class="content">
-        <div class="post">
-            <h2>Sample Blog Post</h2>
-            <p>This is a sample blog post where you can review products and services. Add more blog posts from the admin section.</p>
+        <div id="home">
+            <div class="post">
+                <h2>Welcome to ReviewSphere!</h2>
+                <p>Your go-to platform for unbiased reviews of products and services. Explore the most trusted insights and make informed decisions.</p>
+            </div>
+            <div class="ads">
+                <iframe src="https://via.placeholder.com/728x90?text=Google+Ads+Placeholder"></iframe>
+            </div>
         </div>
 
-        <div class="ads">
-            <!-- Replace with your Google AdSense code -->
-            <iframe src="https://via.placeholder.com/728x90?text=Google+Ads+Placeholder"></iframe>
+        <div class="about" id="about">
+            <h2>About ReviewSphere</h2>
+            <p>At ReviewSphere, we strive to provide honest and transparent reviews of a wide range of products and services. Our goal is to empower users with the information they need to make informed choices.</p>
+            <p>Whether it's technology, lifestyle, or everyday essentials, we cover it all with integrity and thorough research.</p>
+        </div>
+
+        <div class="contact" id="contact">
+            <h2>Contact Us</h2>
+            <p>We'd love to hear from you! For inquiries, collaborations, or feedback, please reach out via email:</p>
+            <p><strong>Email:</strong> contact@reviewsphere.com</p>
+            <p>Follow us on social media for the latest updates:</p>
+            <p><strong>X:</strong> @ReviewSphere | <strong>Facebook:</strong> ReviewSphere</p>
         </div>
     </div>
 
@@ -176,6 +205,14 @@
     </footer>
 
     <script>
+        function checkAdminAccess() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const isAdmin = urlParams.get('admin');
+            if (isAdmin === 'true') {
+                document.getElementById('adminSection').style.display = 'block';
+            }
+        }
+
         function addPost() {
             const title = document.getElementById('title').value;
             const content = document.getElementById('content').value;
@@ -192,6 +229,16 @@
                 alert('Please fill out both fields.');
             }
         }
+
+        function showSection(section) {
+            document.querySelectorAll('.content > div').forEach(div => {
+                div.style.display = 'none';
+            });
+            document.getElementById(section).style.display = 'block';
+        }
+
+        checkAdminAccess();
+        showSection('home');
     </script>
 </body>
 </html>
