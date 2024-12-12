@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign In</title>
+    <script>
+        function handleSignIn() {
+            const role = document.querySelector('input[name="role"]:checked').value;
+            if (role === "admin") {
+                const password = prompt("Enter Admin Password:");
+                if (password === "admin123") {
+                    window.location.href = "admin.html";
+                } else {
+                    alert("Incorrect Password.");
+                }
+            } else {
+                alert("Welcome, user!");
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Sign In</h1>
+    <label><input type="radio" name="role" value="admin"> Admin</label>
+    <label><input type="radio" name="role" value="user" checked> User</label>
+    <button onclick="handleSignIn()">Sign In</button>
+</body>
+</html>

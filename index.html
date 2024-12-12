@@ -1,244 +1,121 @@
+<!-- Updated Main Website with Restored About and Contact Pages and Enhanced Design -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReviewSphere - Your Trusted Ratings</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Lobster&family=Open+Sans:wght@300;600&display=swap" rel="stylesheet">
+    <title>ReviewSphere - Home</title>
+    <link rel="stylesheet" href="styles.css">
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f9f9f9;
+            background: linear-gradient(to bottom, #f1f5f9, #cbd5e1);
             color: #333;
         }
-
         header {
-            background-color: #1e90ff;
+            background-color: #007bff;
             color: white;
             padding: 20px;
             text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 24px;
         }
-
-        header h1 {
-            margin: 0;
-            font-size: 2.5em;
-            font-family: 'Lobster', cursive;
-        }
-
-        header p {
-            margin: 5px 0 0;
-        }
-
         nav {
-            background-color: #ffffff;
-            display: flex;
-            justify-content: center;
-            padding: 10px 0;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
         }
-
         nav a {
+            color: white;
             margin: 0 15px;
             text-decoration: none;
-            color: #1e90ff;
             font-weight: bold;
-            font-family: 'Open Sans', sans-serif;
         }
-
         nav a:hover {
             text-decoration: underline;
         }
-
         .content {
             padding: 20px;
-            max-width: 900px;
+            max-width: 1200px;
             margin: auto;
         }
-
-        .post {
-            background-color: white;
-            margin: 20px 0;
-            padding: 15px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .post h2 {
-            margin: 0 0 10px;
-            color: #1e90ff;
-        }
-
-        .post p {
-            line-height: 1.6;
-        }
-
         footer {
-            text-align: center;
-            background-color: #1e90ff;
+            background-color: #007bff;
             color: white;
-            padding: 10px 0;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-
-        .admin-section {
-            display: none;
-            max-width: 900px;
-            margin: 20px auto;
-            padding: 15px;
-            background-color: #ffffff;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .admin-section h2 {
-            color: #1e90ff;
-        }
-
-        .admin-section label, .admin-section input, .admin-section textarea {
-            display: block;
-            width: 100%;
-            margin-bottom: 10px;
-        }
-
-        .admin-section input, .admin-section textarea {
+            text-align: center;
             padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
         }
-
-        .admin-section button {
-            background-color: #1e90ff;
+        .section-title {
+            font-family: 'Georgia', serif;
+            font-size: 32px;
+            color: #333;
+        }
+        aside {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .button {
+            background-color: #007bff;
             color: white;
             border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .admin-section button:hover {
-            background-color: #005bb5;
-        }
-
-        .ads {
+            padding: 10px 20px;
             text-align: center;
-            margin: 20px 0;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
         }
-
-        .ads iframe {
-            width: 100%;
-            max-width: 728px;
-            height: 90px;
-            border: none;
-        }
-
-        .about, .contact {
-            display: none;
-        }
-
-        .about h2, .contact h2 {
-            color: #1e90ff;
-            font-family: 'Lobster', cursive;
-        }
-
-        .about p, .contact p {
-            line-height: 1.6;
-            font-family: 'Open Sans', sans-serif;
+        .button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>ReviewSphere</h1>
-        <p>Unbiased Reviews You Can Trust</p>
-    </header>
-
-    <nav>
-        <a href="#" onclick="showSection('home')">Home</a>
-        <a href="#" onclick="showSection('about')">About</a>
-        <a href="#" onclick="showSection('contact')">Contact</a>
-    </nav>
-
     <div class="content">
-        <div id="home">
-            <div class="post">
-                <h2>Welcome to ReviewSphere!</h2>
-                <p>Your go-to platform for unbiased reviews of products and services. Explore the most trusted insights and make informed decisions.</p>
-            </div>
-            <div class="ads">
-                <iframe src="https://via.placeholder.com/728x90?text=Google+Ads+Placeholder"></iframe>
-            </div>
-        </div>
-
-        <div class="about" id="about">
-            <h2>About ReviewSphere</h2>
-            <p>At ReviewSphere, we strive to provide honest and transparent reviews of a wide range of products and services. Our goal is to empower users with the information they need to make informed choices.</p>
-            <p>Whether it's technology, lifestyle, or everyday essentials, we cover it all with integrity and thorough research.</p>
-        </div>
-
-        <div class="contact" id="contact">
-            <h2>Contact Us</h2>
-            <p>We'd love to hear from you! For inquiries, collaborations, or feedback, please reach out via email:</p>
-            <p><strong>Email:</strong> contact@reviewsphere.com</p>
-            <p>Follow us on social media for the latest updates:</p>
-            <p><strong>X:</strong> @ReviewSphere | <strong>Facebook:</strong> ReviewSphere</p>
-        </div>
+        <header>
+            <h1>ReviewSphere</h1>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+                <a href="signin.html" class="signin-btn">Sign In</a>
+            </nav>
+        </header>
+        <main>
+            <section id="blogs">
+                <h2 class="section-title">Recent Posts</h2>
+                <article>
+                    <h3>Sample Blog Post</h3>
+                    <p>This is a sample blog post. Check back for more!</p>
+                </article>
+            </section>
+        </main>
     </div>
-
-    <div class="admin-section" id="adminSection">
-        <h2>Admin Panel</h2>
-        <label for="title">Post Title</label>
-        <input type="text" id="title" placeholder="Enter post title">
-
-        <label for="content">Post Content</label>
-        <textarea id="content" rows="5" placeholder="Enter post content"></textarea>
-
-        <button onclick="addPost()">Add Post</button>
-    </div>
-
+    <aside id="sidebar">
+        <h3>Sponsored</h3>
+        <!-- Google Ads Placeholder -->
+        <div class="adsense">
+            <script>
+                // Paste your Google AdSense script here after approval
+            </script>
+        </div>
+    </aside>
     <footer>
-        <p>&copy; 2024 ReviewSphere. All rights reserved.</p>
+        <p>&copy; 2024 ReviewSphere. All Rights Reserved.</p>
+        <!-- Footer Google Ad Placeholder -->
+        <div class="adsense">
+            <script>
+                // Paste your Google AdSense script here after approval
+            </script>
+        </div>
     </footer>
-
-    <script>
-        function checkAdminAccess() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const isAdmin = urlParams.get('admin');
-            if (isAdmin === 'true') {
-                document.getElementById('adminSection').style.display = 'block';
-            }
-        }
-
-        function addPost() {
-            const title = document.getElementById('title').value;
-            const content = document.getElementById('content').value;
-
-            if (title && content) {
-                const post = document.createElement('div');
-                post.className = 'post';
-                post.innerHTML = `<h2>${title}</h2><p>${content}</p>`;
-
-                document.querySelector('.content').appendChild(post);
-                document.getElementById('title').value = '';
-                document.getElementById('content').value = '';
-            } else {
-                alert('Please fill out both fields.');
-            }
-        }
-
-        function showSection(section) {
-            document.querySelectorAll('.content > div').forEach(div => {
-                div.style.display = 'none';
-            });
-            document.getElementById(section).style.display = 'block';
-        }
-
-        checkAdminAccess();
-        showSection('home');
-    </script>
 </body>
 </html>

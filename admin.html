@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - ReviewSphere</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #1e90ff;
+            text-align: center;
+        }
+
+        .editor-toolbar button {
+            margin: 5px;
+            padding: 10px;
+            background-color: #1e90ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .editor-toolbar button:hover {
+            background-color: #005bb5;
+        }
+
+        #editor {
+            width: 100%;
+            height: 300px;
+            margin: 20px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background-color: #218838;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Panel</h1>
+        <label for="postTitle">Post Title:</label>
+        <input type="text" id="postTitle" placeholder="Enter the post title" style="width: 100%; padding: 10px; margin-bottom: 10px;">
+
+        <label for="editor">Post Content:</label>
+        <div id="editor" contenteditable="true" placeholder="Write your post content here..."></div>
+
+        <div class="editor-toolbar">
+            <button onclick="formatText('bold')">Bold</button>
+            <button onclick="formatText('italic')">Italic</button>
+            <button onclick="addLink()">Add Link</button>
+            <button onclick="addImage()">Add Image</button>
+            <button onclick="addHeader('h1')">H1</button>
+            <button onclick="addHeader('h2')">H2</button>
+        </div>
+
+        <button class="submit-btn" onclick="publishPost()">Publish Post</button>
+    </div>
+
+    <script>
+        function formatText(command) {
+            document.execCommand(command, false, null);
+        }
+
+        function addLink() {
+            const url = prompt("Enter the URL:");
+            if (url) {
+                document.execCommand('createLink', false, url);
+            }
+        }
+
+        function addImage() {
+            const url = prompt("Enter the image URL:");
+            if (url) {
+                const imgTag = `<img src="${url}" alt="" style="max-width:100%;">`;
+                document.execCommand('insertHTML', false, imgTag);
+            }
+        }
+
+        function addHeader(tag) {
+            const selectedText = window.getSelection().toString();
+            const headerTag = `<${tag}>${selectedText}</${tag}>`;
+            document.execCommand('insertHTML', false, headerTag);
+        }
+
+        function publishPost() {
+            const title = document.getElementById('postTitle').value;
+            const content = document.getElementById('editor').innerHTML;
+
+            if (!title || !content) {
+                alert("Please fill in both the title and the content before publishing.");
+                return;
+            }
+
+            alert(`Post Published:\nTitle: ${title}\nContent: ${content}`);
+            document.getElementById('postTitle').value = "";
+            document.getElementById('editor').innerHTML = "";
+        }
+    </script>
+</body>
+</html>
