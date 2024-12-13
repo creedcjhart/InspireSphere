@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReviewSphere - System Settings</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="ReviewSphere Logo" class="site-logo">
+            <h1>System Settings</h1>
+            <nav>
+                <a href="{{ url_for('home') }}">Home</a>
+                <a href="{{ url_for('admin') }}">Admin</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content">
+        <main class="settings-container">
+            <div class="settings-grid">
+                <!-- Site Configuration -->
+                <section class="settings-card">
+                    <h2>Site Configuration</h2>
+                    <form action="{{ url_for('update_site_settings') }}" method="POST" class="settings-form">
+                        <div class="form-group">
+                            <label for="site_name">Site Name</label>
+                            <input type="text" id="site_name" name="site_name" value="{{ config.SITE_NAME }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="site_description">Site Description</label>
+                            <textarea id="site_description" name="site_description" rows="3">{{ config.SITE_DESCRIPTION }}</textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="maintenance_mode">Maintenance Mode</label>
+                            <select id="maintenance_mode" name="maintenance_mode">
+                                <option value="0" {% if not config.MAINTENANCE_MODE %}selected{% endif %}>Off</option>
+                                <option value="1" {% if config.MAINTENANCE_MODE %}selected{% endif %}>On</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="button">Save Site Settings</button>
+                    </form>
+                </section>
+
+                <!-- Email Configuration -->
+                <section class="settings-card">
+                    <h2>Email Configuration</h2>
+                    <form action="{{ url_for('update_email_settings') }}" method="POST" class="settings-form">
+                        <div class="form-group">
+                            <label for="smtp_server">SMTP Server</label>
+                            <input type="text" id="smtp_server" name="smtp_server" value="{{ config.MAIL_SERVER }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="smtp_port">SMTP Port</label>
+                            <input type="number" id="smtp_port" name="smtp_port" value="{{ config.MAIL_PORT }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="smtp_username">SMTP Username</label>
+                            <input type="text" id="smtp_username" name="smtp_username" value="{{ config.MAIL_USERNAME }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="smtp_password">SMTP Password</label>
+                            <input type="password" id="smtp_password" name="smtp_password" placeholder="Enter new password">
+                        </div>
+                        
+                        <button type="submit" class="button">Save Email Settings</button>
+                    </form>
+                </section>
+
+                <!-- Security Settings -->
+                <section class="settings-card">
+                    <h2>Security Settings</h2>
+                    <form action="{{ url_for('update_security_settings') }}" method="POST" class="settings-form">
+                        <div class="form-group">
+                            <label for="session_timeout">Session Timeout (minutes)</label>
+                            <input type="number" id="session_timeout" name="session_timeout" value="{{ config.PERMANENT_SESSION_LIFETIME.total_seconds() // 60 }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="max_login_attempts">Max Login Attempts</label>
+                            <input type="number" id="max_login_attempts" name="max_login_attempts" value="{{ config.MAX_LOGIN_ATTEMPTS }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password_policy">Password Policy</label>
+                            <select id="password_policy" name="password_policy">
+                                <option value="basic" {% if config.PASSWORD_POLICY == 'basic' %}selected{% endif %}>Basic</option>
+                                <option value="medium" {% if config.PASSWORD_POLICY == 'medium' %}selected{% endif %}>Medium</option>
+                                <option value="strong" {% if config.PASSWORD_POLICY == 'strong' %}selected{% endif %}>Strong</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="button">Save Security Settings</button>
+                    </form>
+                </section>
+
+                <!-- Backup & Maintenance -->
+                <section class="settings-card">
+                    <h2>Backup & Maintenance</h2>
+                    <div class="maintenance-actions">
+                        <button onclick="createBackup()" class="button">Create Backup</button>
+                        <button onclick="clearCache()" class="button">Clear Cache</button>
+                        <button onclick="optimizeDatabase()" class="button">Optimize Database</button>
+                    </div>
+                    
+                    <div class="backup-history">
+                        <h3>Recent Backups</h3>
+                        <ul class="backup-list">
+                            {% for backup in backups %}
+                            <li>
+                                {{ backup.date.strftime('%Y-%m-%d %H:%M') }}
+                                <button onclick="restoreBackup('{{ backup.id }}')" class="button small">Restore</button>
+                                <button onclick="downloadBackup('{{ backup.id }}')" class="button small">Download</button>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 ReviewSphere. All rights reserved.</p>
+    </footer>
+
+    <script>
+        async function createBackup() {
+            if (confirm('Create a new backup? This may take a few minutes.')) {
+                try {
+                    const response = await fetch('/admin/create-backup', {
+                        method: 'POST',
+                    });
+                    
+                    if (response.ok) {
+                        alert('Backup created successfully!');
+                        location.reload();
+                    } else {
+                        alert('Failed to create backup. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                }
+            }
+        }
+
+        async function clearCache() {
+            if (confirm('Clear all cache? This will temporarily slow down the site.')) {
+                try {
+                    const response = await fetch('/admin/clear-cache', {
+                        method: 'POST',
+                    });
+                    
+                    if (response.ok) {
+                        alert('Cache cleared successfully!');
+                    } else {
+                        alert('Failed to clear cache. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                }
+            }
+        }
+
+        async function optimizeDatabase() {
+            if (confirm('Optimize database? This may take several minutes.')) {
+                try {
+                    const response = await fetch('/admin/optimize-db', {
+                        method: 'POST',
+                    });
+                    
+                    if (response.ok) {
+                        alert('Database optimized successfully!');
+                    } else {
+                        alert('Failed to optimize database. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                }
+            }
+        }
+
+        async function restoreBackup(backupId) {
+            if (confirm('Restore this backup? This will override current data!')) {
+                try {
+                    const response = await fetch(`/admin/restore-backup/${backupId}`, {
+                        method: 'POST',
+                    });
+                    
+                    if (response.ok) {
+                        alert('Backup restored successfully!');
+                        location.reload();
+                    } else {
+                        alert('Failed to restore backup. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                }
+            }
+        }
+
+        function downloadBackup(backupId) {
+            window.location.href = `/admin/download-backup/${backupId}`;
+        }
+    </script>
+</body>
+</html>

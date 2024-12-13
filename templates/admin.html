@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReviewSphere - Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="ReviewSphere Logo" class="site-logo">
+            <h1>Admin Dashboard</h1>
+            <nav>
+                <a href="{{ url_for('home') }}">Home</a>
+                <a href="{{ url_for('about') }}">About</a>
+                <a href="{{ url_for('contact') }}">Contact</a>
+                <a href="{{ url_for('admin') }}" class="active">Admin</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content">
+        <main class="admin-dashboard">
+            <section class="dashboard-stats">
+                <div class="stat-box">
+                    <h4>{{ total_users }}</h4>
+                    <p>Total Users</p>
+                </div>
+                <div class="stat-box">
+                    <h4>{{ total_posts }}</h4>
+                    <p>Total Posts</p>
+                </div>
+                <div class="stat-box">
+                    <h4>{{ pending_reviews }}</h4>
+                    <p>Pending Reviews</p>
+                </div>
+                <div class="stat-box">
+                    <h4>{{ total_subscribers }}</h4>
+                    <p>Newsletter Subscribers</p>
+                </div>
+            </section>
+
+            <div class="dashboard-grid">
+                <section class="dashboard-card">
+                    <h3>User Activity</h3>
+                    <canvas id="userActivityChart"></canvas>
+                </section>
+
+                <section class="dashboard-card">
+                    <h3>Recent Posts</h3>
+                    <div class="recent-activity">
+                        <ul class="activity-list">
+                            {% for post in recent_posts %}
+                            <li class="activity-item">
+                                <div class="post-info">
+                                    <h4>{{ post.title }}</h4>
+                                    <p>By {{ post.author.username }} on {{ post.date_posted.strftime('%B %d, %Y') }}</p>
+                                </div>
+                                <div class="post-actions">
+                                    <a href="{{ url_for('edit_post', post_id=post.id) }}" class="button">Edit</a>
+                                    <button onclick="deletePost({{ post.id }})" class="button delete">Delete</button>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="dashboard-card">
+                    <h3>User Management</h3>
+                    <div class="user-list">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                <tr>
+                                    <td>{{ user.username }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.role }}</td>
+                                    <td>
+                                        <button onclick="editUser({{ user.id }})" class="button">Edit</button>
+                                        <button onclick="deleteUser({{ user.id }})" class="button delete">Delete</button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="dashboard-card">
+                    <h3>Newsletter Management</h3>
+                    <div class="newsletter-controls">
+                        <button onclick="showNewsletterForm()" class="button">Create Newsletter</button>
+                        <button onclick="showSubscriberList()" class="button">View Subscribers</button>
+                    </div>
+                    <div id="newsletterForm" style="display: none;">
+                        <form onsubmit="sendNewsletter(event)">
+                            <div class="form-group">
+                                <label for="subject">Subject</label>
+                                <input type="text" id="subject" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="content">Content</label>
+                                <textarea id="content" required></textarea>
+                            </div>
+                            <button type="submit" class="button">Send Newsletter</button>
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 ReviewSphere. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Chart.js implementation
+        const ctx = document.getElementById('userActivityChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ activity_dates|tojson }},
+                datasets: [{
+                    label: 'User Activity',
+                    data: {{ activity_counts|tojson }},
+                    borderColor: '#20B2AA',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Admin dashboard functions
+        function deletePost(postId) {
+            if (confirm('Are you sure you want to delete this post?')) {
+                fetch(`/admin/post/${postId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }).then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    }
+                });
+            }
+        }
+
+        function editUser(userId) {
+            window.location.href = `/admin/user/${userId}/edit`;
+        }
+
+        function deleteUser(userId) {
+            if (confirm('Are you sure you want to delete this user?')) {
+                fetch(`/admin/user/${userId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }).then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    }
+                });
+            }
+        }
+
+        function showNewsletterForm() {
+            document.getElementById('newsletterForm').style.display = 'block';
+        }
+
+        function showSubscriberList() {
+            window.location.href = '/admin/subscribers';
+        }
+
+        async function sendNewsletter(event) {
+            event.preventDefault();
+            const subject = document.getElementById('subject').value;
+            const content = document.getElementById('content').value;
+
+            try {
+                const response = await fetch('/admin/send-newsletter', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ subject, content }),
+                });
+
+                if (response.ok) {
+                    alert('Newsletter sent successfully!');
+                    event.target.reset();
+                    document.getElementById('newsletterForm').style.display = 'none';
+                } else {
+                    alert('Failed to send newsletter. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+    </script>
+</body>
+</html>

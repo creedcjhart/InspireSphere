@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ReviewSphere{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID"
+        crossorigin="anonymous"></script>
+    {% block head %}{% endblock %}
+    <style>
+        .ad-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .sidebar-ad {
+            max-width: 300px;
+            margin: 20px auto;
+        }
+        .in-article-ad {
+            max-width: 728px;
+            margin: 30px auto;
+        }
+        @media (max-width: 768px) {
+            .sidebar-ad, .in-article-ad {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="ReviewSphere Logo" class="site-logo">
+            <h1>ReviewSphere</h1>
+            <nav>
+                <a href="{{ url_for('home') }}">Home</a>
+                {% if current_user.is_authenticated %}
+                    {% if current_user.is_admin %}
+                        <a href="{{ url_for('admin') }}">Admin Dashboard</a>
+                    {% endif %}
+                    <a href="{{ url_for('logout') }}" class="signin-btn">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="signin-btn">Sign In</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>About ReviewSphere</h4>
+                <p>Your trusted source for honest reviews and meaningful discussions.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    {% if current_user.is_authenticated and current_user.is_admin %}
+                        <li><a href="{{ url_for('admin') }}">Admin Dashboard</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 ReviewSphere. All rights reserved.</p>
+        </div>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

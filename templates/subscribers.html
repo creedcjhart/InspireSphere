@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReviewSphere - Newsletter Subscribers</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="ReviewSphere Logo" class="site-logo">
+            <h1>Newsletter Subscribers</h1>
+            <nav>
+                <a href="{{ url_for('home') }}">Home</a>
+                <a href="{{ url_for('about') }}">About</a>
+                <a href="{{ url_for('contact') }}">Contact</a>
+                <a href="{{ url_for('admin') }}">Admin</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content">
+        <main>
+            <div class="subscribers-container">
+                <div class="subscribers-header">
+                    <h2>Subscriber List</h2>
+                    <div class="subscriber-actions">
+                        <button onclick="exportSubscribers()" class="button">Export CSV</button>
+                        <button onclick="showImportForm()" class="button">Import Subscribers</button>
+                    </div>
+                </div>
+
+                <div class="subscriber-stats">
+                    <div class="stat-card">
+                        <h4>{{ subscribers|length }}</h4>
+                        <p>Total Subscribers</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>{{ new_subscribers }}</h4>
+                        <p>New This Month</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>{{ unsubscribed }}</h4>
+                        <p>Unsubscribed</p>
+                    </div>
+                </div>
+
+                <div class="subscriber-list">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Date Subscribed</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for subscriber in subscribers %}
+                            <tr>
+                                <td>{{ subscriber.email }}</td>
+                                <td>{{ subscriber.date_subscribed.strftime('%B %d, %Y') }}</td>
+                                <td>
+                                    <span class="status-badge active">Active</span>
+                                </td>
+                                <td>
+                                    <button onclick="removeSubscriber({{ subscriber.id }})" class="button delete">Remove</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="importForm" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <h3>Import Subscribers</h3>
+                        <form onsubmit="importSubscribers(event)">
+                            <div class="form-group">
+                                <label for="csvFile">CSV File</label>
+                                <input type="file" id="csvFile" accept=".csv" required>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="button">Import</button>
+                                <button type="button" onclick="closeImportForm()" class="button cancel">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 ReviewSphere. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function showImportForm() {
+            document.getElementById('importForm').style.display = 'block';
+        }
+
+        function closeImportForm() {
+            document.getElementById('importForm').style.display = 'none';
+        }
+
+        async function removeSubscriber(subscriberId) {
+            if (confirm('Are you sure you want to remove this subscriber?')) {
+                try {
+                    const response = await fetch(`/admin/subscriber/${subscriberId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    });
+
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert('Failed to remove subscriber. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                }
+            }
+        }
+
+        function exportSubscribers() {
+            window.location.href = '/admin/subscribers/export';
+        }
+
+        async function importSubscribers(event) {
+            event.preventDefault();
+            const fileInput = document.getElementById('csvFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Please select a CSV file');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch('/admin/subscribers/import', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (response.ok) {
+                    alert('Subscribers imported successfully!');
+                    location.reload();
+                } else {
+                    alert('Failed to import subscribers. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+    </script>
+</body>
+</html>

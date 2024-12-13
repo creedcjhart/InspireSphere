@@ -4,34 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ReviewSphere - Sign In</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" type="image/png" href="favicon.png">
-    <script>
-        function handleSignIn() {
-            const role = document.querySelector('input[name="role"]:checked').value;
-            if (role === "admin") {
-                const password = prompt("Enter Admin Password:");
-                if (password === "admin123") {
-                    window.location.href = "admin.html";
-                } else {
-                    alert("Incorrect Password.");
-                }
-            } else {
-                alert("Welcome, user!");
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
 </head>
 <body class="auth-page">
     <div class="auth-container">
         <div class="auth-box">
             <div class="auth-header">
-                <img src="logo.png" alt="ReviewSphere Logo" class="auth-logo">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="ReviewSphere Logo" class="auth-logo">
                 <h1>Welcome Back!</h1>
                 <p>Sign in to continue to ReviewSphere</p>
             </div>
             
-            <form action="/login" method="POST" class="auth-form">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="message error">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <form action="{{ url_for('login') }}" method="POST" class="auth-form">
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input type="text" id="username" name="username" required>
@@ -51,28 +44,24 @@
             </form>
             
             <div class="auth-links">
-                <a href="#" class="forgot-password">Forgot Password?</a>
+                <a href="{{ url_for('forgot_password') }}" class="forgot-password">Forgot Password?</a>
                 <span class="divider">|</span>
-                <a href="/signup" class="create-account">Create Account</a>
+                <a href="{{ url_for('signup') }}" class="create-account">Create Account</a>
             </div>
             
             <div class="social-auth">
                 <p>Or sign in with</p>
                 <div class="social-buttons">
                     <button class="social-button google">
-                        <img src="google-icon.png" alt="Google">
+                        <img src="{{ url_for('static', filename='images/google-icon.png') }}" alt="Google">
                         Google
                     </button>
                     <button class="social-button facebook">
-                        <img src="facebook-icon.png" alt="Facebook">
+                        <img src="{{ url_for('static', filename='images/facebook-icon.png') }}" alt="Facebook">
                         Facebook
                     </button>
                 </div>
             </div>
-            
-            <label><input type="radio" name="role" value="admin"> Admin</label>
-            <label><input type="radio" name="role" value="user" checked> User</label>
-            <button onclick="handleSignIn()">Sign In</button>
         </div>
     </div>
 </body>
