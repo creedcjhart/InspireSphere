@@ -32,14 +32,16 @@ app.config['UPLOAD_FOLDER'] = os.path.join(app.static_folder, 'uploads')
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
-# Create upload directory if it doesn't exist
+# Ensure upload directory exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
+# Initialize extensions
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 mail = Mail(app)
 
+# Models
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
@@ -69,7 +71,7 @@ class Post(db.Model):
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     last_edited = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    status = db.Column(db.String(20), default='draft')  # draft, published
+    status = db.Column(db.String(20), default='draft')
     images = db.relationship('PostImage', backref='post', lazy=True, cascade='all, delete-orphan')
 
 class PostImage(db.Model):
@@ -78,34 +80,38 @@ class PostImage(db.Model):
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
     upload_date = db.Column(db.DateTime, default=datetime.utcnow)
 
+def create_owner_account(username='admin', email='admin@example.com', password='admin'):
+    if User.query.filter_by(role='owner').first():
+        return False
+    
+    owner = User(
+        username=username,
+        email=email,
+        role='owner',
+        is_active=True
+    )
+    owner.password_hash = generate_password_hash(password)
+    db.session.add(owner)
+    db.session.commit()
+    return True
+
+@app.before_first_request
+def initialize_database():
+    db.create_all()
+    # Create owner account if it doesn't exist
+    if not User.query.filter_by(role='owner').first():
+        create_owner_account(
+            username=os.getenv('ADMIN_USERNAME', 'admin'),
+            email=os.getenv('ADMIN_EMAIL', 'admin@example.com'),
+            password=os.getenv('ADMIN_PASSWORD', 'admin')
+        )
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
-
-def create_owner_account(username, email, password):
-    with app.app_context():
-        # Check if owner already exists
-        owner = User.query.filter_by(role='owner').first()
-        if owner:
-            return False, "Owner account already exists"
-            
-        # Create new owner account
-        try:
-            owner = User(
-                username=username,
-                email=email,
-                role='owner'
-            )
-            owner.password_hash = generate_password_hash(password)
-            db.session.add(owner)
-            db.session.commit()
-            return True, "Owner account created successfully"
-        except Exception as e:
-            db.session.rollback()
-            return False, str(e)
 
 # Admin required decorator
 def admin_required(f):
@@ -294,14 +300,4 @@ def delete_post(post_id):
     return redirect(url_for('admin'))
 
 if __name__ == '__main__':
-    with app.app_context():
-        # Drop all tables and recreate them
-        db.drop_all()
-        db.create_all()
-        
-        # Create the owner account if it doesn't exist
-        owner = User.query.filter_by(role='owner').first()
-        if not owner:
-            create_owner_account('admin', 'admin@example.com', 'password')
-            
     app.run(debug=True)
