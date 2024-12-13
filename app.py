@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
@@ -5,25 +6,26 @@ from flask_mail import Mail, Message
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
-import os
 from dotenv import load_dotenv
 from functools import wraps
 
+# Load environment variables
 load_dotenv()
 
-app = Flask(__name__, 
-    static_folder='static',
-    template_folder='templates'
-)
+app = Flask(__name__)
 
 # Configuration
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-secret-key-here')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'default-secret-key-for-development')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///blog.db')
+if app.config['SQLALCHEMY_DATABASE_URI'].startswith('postgres://'):
+    app.config['SQLALCHEMY_DATABASE_URI'] = app.config['SQLALCHEMY_DATABASE_URI'].replace('postgres://', 'postgresql://', 1)
+
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = os.getenv('EMAIL_USER')
-app.config['MAIL_PASSWORD'] = os.getenv('EMAIL_PASS')
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 
 # Upload configuration
 app.config['UPLOAD_FOLDER'] = os.path.join(app.static_folder, 'uploads')
