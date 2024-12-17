@@ -1,4 +1,17 @@
-/* Base styles */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Additional styles for the logo */
+.site-logo {
+    cursor: pointer; /* Change cursor on hover */
+    transition: transform 0.3s; /* Smooth transition */
+}
+
+.site-logo:hover {
+    transform: scale(1.05); /* Slightly enlarge on hover */
+}
 :root {
     --primary-color: #007bff;
     --secondary-color: #0056b3;

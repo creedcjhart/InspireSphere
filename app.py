@@ -284,21 +284,22 @@ def edit_post(post_id):
     if request.method == 'POST':
         post.title = request.form.get('title')
         post.content = request.form.get('content')
+        post.author = "Cornelius Hart"  # Set author name
+        
+        if 'image' in request.files:
+            image_file = request.files['image']
+            if allowed_file(image_file.filename):
+                filename = secure_filename(image_file.filename)
+                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+                filename = f"{timestamp}_{filename}"
+                image_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                post.images.append(PostImage(filename=filename, post_id=post.id))
+        
         db.session.commit()
         flash('Post updated successfully!', 'success')
         return redirect(url_for('view_post', post_id=post.id))
         
     return render_template('admin/edit_post.html', post=post)
-
-@app.route('/admin/delete-post/<int:post_id>', methods=['POST'])
-@login_required
-@admin_required
-def delete_post(post_id):
-    post = Post.query.get_or_404(post_id)
-    db.session.delete(post)
-    db.session.commit()
-    flash('Post deleted successfully!', 'success')
-    return redirect(url_for('admin'))
 
 if __name__ == '__main__':
     app.run(debug=True)
