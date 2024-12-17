@@ -236,6 +236,11 @@ nav a:hover {
     transform: translateY(-5px);
 }
 
+.post img {
+    max-width: 100%;
+    height: auto;
+}
+
 /* Newsletter subscription */
 .newsletter {
     background: rgba(255, 255, 255, 0.95);

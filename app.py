@@ -149,7 +149,8 @@ def contact():
 
 @app.route('/blog')
 def blog():
-    return render_template('blog.html')
+    posts = Post.query.filter_by(status='published').all()
+    return render_template('blog.html', posts=posts)
 
 @app.route('/post/<int:post_id>')
 def view_post(post_id):
