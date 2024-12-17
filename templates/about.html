@@ -3,123 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReviewSphere - About Us</title>
+    <title>About Us - ReviewSphere</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
 </head>
 <body>
     <header>
-        <div class="header-content">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="ReviewSphere Logo" class="site-logo">
-            <h1>ReviewSphere</h1>
-            <nav>
-                <a href="{{ url_for('home') }}">Home</a>
-                <a href="{{ url_for('about') }}">About</a>
-                <a href="{{ url_for('contact') }}">Contact</a>
-                {% if current_user.is_authenticated %}
-                    {% if current_user.is_admin %}
-                        <a href="{{ url_for('admin') }}">Admin</a>
-                    {% endif %}
-                    <a href="{{ url_for('logout') }}">Logout</a>
-                {% else %}
-                    <a href="{{ url_for('login') }}" class="signin-btn">Sign In</a>
-                {% endif %}
-            </nav>
-        </div>
+        <h1>About ReviewSphere</h1>
     </header>
 
     <div class="content">
-        <main>
-            <section class="about-hero">
-                <h2 class="section-title">About ReviewSphere</h2>
-                <div class="about-content">
-                    <div class="mission-statement">
-                        <h3>Our Mission</h3>
-                        <p>At ReviewSphere, we believe in the power of honest, unbiased reviews to help people make informed decisions. Our platform brings together passionate reviewers and curious readers to create a vibrant community of shared experiences.</p>
-</div>
+        <section class="mission-statement">
+            <h3>Our Mission</h3>
+            <p>At ReviewSphere, we believe in the power of honest, unbiased reviews to help people make informed decisions. Our platform brings together passionate reviewers and curious readers to create a vibrant community of shared experiences.</p>
+        </section>
 
-<div class="about-team">
-    <h3>Meet the Team</h3>
-    <p>Our dedicated team works tirelessly to ensure that ReviewSphere remains a trusted source for reviews. We are passionate about connecting reviewers and readers.</p>
-    <ul>
-        <li>Cornelius Hart - Founder & CEO</li>
-    </ul>
-</div>
+        <div class="about-team">
+            <h3>Meet the Team</h3>
+            <p>Our dedicated team works tirelessly to ensure that ReviewSphere remains a trusted source for reviews. We are passionate about connecting reviewers and readers.</p>
+            <ul>
+                <li>Cornelius Hart - Founder & CEO</li>
+            </ul>
+        </div>
 
-<div class="user-contributions">
-    <h3>Join Our Community</h3>
-    <p>We invite you to share your reviews and experiences. Your voice matters, and together we can build a comprehensive resource for everyone.</p>
-    <p><a href="{{ url_for('login') }}">Sign in</a> to start contributing!</p>
-</div>
+        <div class="user-contributions">
+            <h3>Join Our Community</h3>
+            <p>We invite you to share your reviews and experiences. Your voice matters, and together we can build a comprehensive resource for everyone.</p>
+            <p><a href="{{ url_for('login') }}">Sign in</a> to start contributing!</p>
+        </div>
 
-                    <div class="about-features">
-                        <div class="feature-card">
-                            <div class="feature-icon">📝</div>
-                            <h4>Expert Reviews</h4>
-                            <p>Detailed, comprehensive reviews from experienced contributors across various categories.</p>
-</div>
+        <div class="about-features">
+            <h3>Features of ReviewSphere</h3>
+            <div class="feature-card">
+                <h4>Expert Reviews</h4>
+                <p>Detailed, comprehensive reviews from experienced contributors across various categories.</p>
+            </div>
+            <div class="feature-card">
+                <h4>Community Driven</h4>
+                <p>A platform where your voice matters. Share experiences and engage with others.</p>
+            </div>
+        </div>
+    </div>
 
-                        <div class="feature-card">
-                            <div class="feature-icon">🤝</div>
-                            <h4>Community Driven</h4>
-                            <p>A platform where your voice matters. Share experiences and engage with others.</p>
-                        </div>
-                        
-                        <div class="feature-card">
-                            <div class="feature-icon">🎯</div>
-                            <h4>Trusted Content</h4>
-                            <p>Verified reviews and quality content moderation to ensure reliability.</p>
-                        </div>
-                    </div>
-
-                    <div class="team-section">
-                        <h3>Our Team</h3>
-                        <div class="team-grid">
-                            <div class="team-member">
-                                <div class="member-avatar">👤</div>
-                                <h4>John Doe</h4>
-                                <p>Founder & CEO</p>
-                            </div>
-                            <div class="team-member">
-                                <div class="member-avatar">👤</div>
-                                <h4>Jane Smith</h4>
-                                <p>Head of Content</p>
-                            </div>
-                            <div class="team-member">
-                                <div class="member-avatar">👤</div>
-                                <h4>Mike Johnson</h4>
-                                <p>Community Manager</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="stats-section">
-                        <div class="stat-card">
-                            <h3>1000+</h3>
-                            <p>Reviews Published</p>
-                        </div>
-                        <div class="stat-card">
-                            <h3>50K+</h3>
-                            <p>Active Users</p>
-                        </div>
-                        <div class="stat-card">
-                            <h3>100+</h3>
-                            <p>Categories</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="join-section">
-    <h3>Join Our Community</h3>
-                <p>Become a part of ReviewSphere and start sharing your experiences today!</p>
-                <a href="{{ url_for('signup') }}" class="button">Get Started</a>
-            </section>
-        </main>
-</div>
     <footer>
         <p>&copy; 2024 ReviewSphere. All rights reserved.</p>
     </footer>
 </body>
 </html>
-
